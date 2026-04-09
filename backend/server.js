@@ -306,9 +306,10 @@ app.post("/signup", async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    await pool.query(
-      `INSERT INTO users (first_name, last_name, email, password_hash, birth_date, gender)
-       VALUES ($1, $2, $3, $4, $5, $6)`,
+    const insertResult = await pool.query(
+      `INSERT INTO users (first_name, last_name, email, password_hash, birth_date, gender, online)
+       VALUES ($1, $2, $3, $4, $5, $6, TRUE)
+       RETURNING id, first_name, last_name, user_name, email, birth_date, avatar, online`,
       [
         firstName,
         lastName,
@@ -319,7 +320,21 @@ app.post("/signup", async (req, res) => {
       ],
     );
 
-    return res.status(201).json({ message: "Compte cree avec succes" });
+    const user = insertResult.rows[0];
+
+    return res.status(201).json({
+      message: "Compte cree avec succes",
+      user: {
+        id: Number(user.id),
+        firstName: user.first_name,
+        lastName: user.last_name,
+        userName: user.user_name || "",
+        email: user.email,
+        birthDate: user.birth_date || null,
+        avatar: user.avatar || "",
+        online: Boolean(user.online),
+      },
+    });
   } catch (error) {
     console.error("Signup error:", error);
     return res.status(500).json({ message: "Erreur serveur" });

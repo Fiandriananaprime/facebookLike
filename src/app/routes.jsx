@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createHashRouter } from "react-router-dom";
 import { RootLayout } from "./components/RootLayout";
 import Login from "./components/pages/Login";
 import SignUp from "./components/pages/SignUp";
@@ -10,7 +10,7 @@ import { Gaming } from "./components/pages/Gaming";
 import { Profile } from "./components/pages/Profile";
 import { NotFound } from "./components/pages/NotFound";
 
-const router = createBrowserRouter([
+const router = createHashRouter([
   // Routes publiques (login / signup)
   { path: "/", Component: Login },
   { path: "/signup", Component: SignUp },

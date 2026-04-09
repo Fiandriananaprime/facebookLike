@@ -51,7 +51,15 @@ function SignUp() {
         }
 
         const data = await res.json().catch(() => ({}));
-        console.log("Inscription reussie !", data);
+        if (!data?.user) {
+          alert("Compte cree, mais session indisponible. Connecte-toi manuellement.");
+          navigate("/");
+          return;
+        }
+
+        localStorage.setItem("userData", JSON.stringify(data.user));
+        window.dispatchEvent(new Event("userDataUpdated"));
+        console.log("Inscription reussie !", data.user);
         navigate("/home");
       } catch (err) {
         console.error("Erreur serveur :", err);
