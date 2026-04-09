@@ -10,9 +10,18 @@ require("dotenv").config({ path: path.join(__dirname, ".env") });
 const app = express();
 const PORT = process.env.PORT || 5000;
 const FRONTEND_URL = process.env.FRONTEND_URL || "";
+const DEFAULT_RENDER_FRONTEND_URL = "https://facebooklike.onrender.com";
+const databaseUrl = process.env.DATABASE_URL || "";
+const isLocalDatabase =
+  databaseUrl.includes("@localhost:") || databaseUrl.includes("@127.0.0.1:");
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: databaseUrl,
+  ssl: isLocalDatabase
+    ? false
+    : {
+        rejectUnauthorized: false,
+      },
 });
 let messagesRequiresConversationId = false;
 
@@ -229,6 +238,7 @@ const ensureSchema = async () => {
 const allowedOrigins = new Set([
   "http://localhost:5173",
   "http://127.0.0.1:5173",
+  DEFAULT_RENDER_FRONTEND_URL,
 ]);
 
 FRONTEND_URL.split(",")

@@ -2,6 +2,8 @@ const trim = (value) => (typeof value === "string" ? value.trim() : "");
 const isUrl = (value) => /^https?:\/\/[^/\s]+$/i.test(value);
 const isLocalHostname = (hostname) =>
   hostname === "localhost" || hostname === "127.0.0.1";
+const DEFAULT_RENDER_FRONTEND_URL = "https://facebooklike.onrender.com";
+const DEFAULT_RENDER_BACKEND_URL = "https://fakebook-v80p.onrender.com";
 
 const getRuntimeUrl = (key) => {
   if (typeof window === "undefined") return "";
@@ -46,6 +48,10 @@ const getDefaultApiBaseUrl = () => {
     return "http://localhost:5000";
   }
 
+  if (origin === DEFAULT_RENDER_FRONTEND_URL) {
+    return DEFAULT_RENDER_BACKEND_URL;
+  }
+
   return `${origin}/api`;
 };
 
@@ -67,6 +73,10 @@ const getDefaultSocketUrl = () => {
 
   if (isLocal) {
     return "http://localhost:5000";
+  }
+
+  if (origin === DEFAULT_RENDER_FRONTEND_URL) {
+    return DEFAULT_RENDER_BACKEND_URL;
   }
 
   return origin;
